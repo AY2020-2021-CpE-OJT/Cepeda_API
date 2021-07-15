@@ -27,7 +27,7 @@ router.delete('/delete/:id', async (req, res) => {
 });
 // <<<<<<<<<<<<<<<< UPDATE VIA ID >>>>>>>>>>>>>>>>> //
 router.patch('/update/:id', async (req, res) => {
-	console.log("RUN UPDATE DELETE VIA ID");
+	console.log("RUN UPDATE VIA ID");
 	const q = await Contact.updateOne({_id: req.params.id}, {$set: req.body});
 	res.json(q);
 });
