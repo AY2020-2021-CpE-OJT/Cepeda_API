@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Contact = require('../models/contact');
 var mongodb = require("mongodb");
+const { restart } = require('nodemon');
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SECURITY ADD ON INIT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+const jwt = require('jsonwebtoken');
+
 // <<<<<<<<<<<<<<<< TESTS >>>>>>>>>>>>>>>>> //
 router.get('/test', (req, res) => {
 	res.send("test");
@@ -45,5 +49,39 @@ router.get('/search/:via', function(req,res){
         return res.send(contact);
     });
 });
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SECURITY ADD ON ROUTES >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+
+
+// <<<<<<<<<<<<<<<< LOGIN SUPPOSEDLY >>>>>>>>>>>>>>>>> //
+router.post('/login/:user/:password', function(req,res){
+	var user = { id: req.params.user };
+	var token = jwt.sign({user},'1');
+	res.json({token:token});
+});
+
+// <<<<<<<<<<<<<<<< SECURED ROUTE SUPPOSEDLY >>>>>>>>>>>>>>>>> //
+router.get('/secure/:message',verifyToken, function(req,res){
+	jwt.verify(req.token,"1",function(err,data){
+		if(err){ 
+			res.sendStatus(403);
+		} else {
+			console.log("SECURE LOG: " + req.params.message);
+			res.json({text: req.params.message, data: data });
+		}
+	})
+});
+// <<<<<<<<<<<<<<<< THIS FUNCTION CHECKS THE TOKEN >>>>>>>>>>>>>>>>> //
+function verifyToken(req,res,next){
+	const bearerHeader = req.headers["authorization"];
+	if(typeof bearerHeader !== 'undefined'){
+		const bearer = bearerHeader.split(" ");
+		const bearerToken = bearer[1];
+		req.token = bearerToken;
+		next();
+	} else {
+		res.sendStatus(403);
+	}
+	
+}
 
 module.exports = router;
