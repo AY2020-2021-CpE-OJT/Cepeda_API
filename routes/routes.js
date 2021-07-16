@@ -5,6 +5,7 @@ var mongodb = require("mongodb");
 const { restart } = require('nodemon');
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SECURITY ADD ON INIT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 const jwt = require('jsonwebtoken');
+var key = "testing_key";
 
 // <<<<<<<<<<<<<<<< TESTS >>>>>>>>>>>>>>>>> //
 router.get('/test', (req, res) => {
@@ -55,13 +56,13 @@ router.get('/search/:via', function(req,res){
 // <<<<<<<<<<<<<<<< LOGIN SUPPOSEDLY >>>>>>>>>>>>>>>>> //
 router.post('/login/:user/:password', function(req,res){
 	var user = { id: req.params.user };
-	var token = jwt.sign({user},'1');
+	var token = jwt.sign({user},key);
 	res.json({token:token});
 });
 
 // <<<<<<<<<<<<<<<< SECURED ROUTE SUPPOSEDLY >>>>>>>>>>>>>>>>> //
 router.get('/secure/:message',verifyToken, function(req,res){
-	jwt.verify(req.token,"1",function(err,data){
+	jwt.verify(req.token,key,function(err,data){
 		if(err){ 
 			res.sendStatus(403);
 		} else {
