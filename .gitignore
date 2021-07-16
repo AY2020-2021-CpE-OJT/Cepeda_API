@@ -3,3 +3,4 @@ node_modules
 gn.bat
 /ref
 /references
+.env

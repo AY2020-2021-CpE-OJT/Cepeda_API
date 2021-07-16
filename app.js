@@ -25,6 +25,9 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
 	res.send("THIS IS VERSION 4");
 });
+//  <<<<<<<<<<<<<<<< FORMS FOR LOGIN >>>>>>>>>>>>>>>>> //
+app.set('view-engine','ejs');
+//app.use(express.urlencoded);
 
 const reroute = require('./routes/routes');
 app.use('/',reroute);

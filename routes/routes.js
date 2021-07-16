@@ -85,4 +85,26 @@ function verifyToken(req,res,next){
 	
 }
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< PASSPORT SECURITY ADD ON ROUTES >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+router.get('/nuke', (req, res) => {
+	res.render('index.ejs',{username:'Sylvie'});
+});
+
+router.get('/login_nuke', (req, res) => {
+	res.render('login.ejs');
+});
+
+router.get('/register_nuke', (req, res) => {
+	res.render('register.ejs');
+});
+
+router.post('/login_nuke', (req, res) => {
+	// DO
+});
+
+router.post('/register_nuke', (req, res) => {
+	//var formData = JSON.stringify($("#registry_data").serializeArray());
+	//res.json(formData);
+});
+
 module.exports = router;
