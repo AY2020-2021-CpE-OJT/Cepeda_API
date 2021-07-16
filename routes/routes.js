@@ -55,7 +55,7 @@ router.get('/search/:via', function(req,res){
 
 // <<<<<<<<<<<<<<<< LOGIN SUPPOSEDLY >>>>>>>>>>>>>>>>> //
 router.post('/login/:user/:password', function(req,res){
-	var user = { id: req.params.user };
+	var user = { id: req.params.user, password: req.params.password };
 	var token = jwt.sign({user},key);
 	res.json({token:token});
 });
