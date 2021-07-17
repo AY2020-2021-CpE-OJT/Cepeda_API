@@ -7,6 +7,7 @@ const { restart } = require('nodemon');
 const jwt = require('jsonwebtoken');
 var key = "testing_key";
 var qs = require('querystring');
+const bcrypt = require('bcrypt');
 
 // <<<<<<<<<<<<<<<< TESTS >>>>>>>>>>>>>>>>> //
 router.get('/test', (req, res) => {
@@ -109,19 +110,25 @@ router.get('/register_nuke', (req, res) => {
 });*/
 
 router.post('/login_nuke', (req, res) => {
-	console.log(req);
-	console.log(req.body.name);
+	console.log('Username: '+ req.body.username);
+	bcrypt.hash(req.body.password, 10, (err, hash) => {
+		console.log('Password: '+hash);
+	  });
+	//console.log(req.body.password);
+	//console.log(req.body.name);
 	//console.log(req);
 	return res.redirect('/login_nuke');
 });
 
-/*
+
 router.post('/register_nuke', (req, res) => {
 	console.log(req);
 	console.log(req.body.name);
 	//console.log(req);
 	return res.redirect('/register_nuke');
 });
+
+
 /*
 const jsonTransform = document.querySelector('#registry_data');
 if(jsonTransform) {
