@@ -5,10 +5,11 @@ var mongodb = require("mongodb");
 const { restart } = require('nodemon');
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SECURITY ADD ON INIT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 const jwt = require('jsonwebtoken');
-var key = "testing_key";
+require('dotenv').config()
+var key = process.env.SECURITY_KEY;
 var qs = require('querystring');
 const bcrypt = require('bcrypt');
-require('dotenv').config()
+
 
 // <<<<<<<<<<<<<<<< TESTS >>>>>>>>>>>>>>>>> //
 router.get('/test', (req, res) => {
@@ -54,13 +55,38 @@ router.get('/search/:via', function(req,res){
     });
 });
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SECURITY ADD ON ROUTES >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+	
+  async function compareEncrypted(toTest,encrypted){
+	const validity = await  bcrypt.compare(toTest,encrypted);
+	return (validity);
+  }
 
+  async function validityCheck(username,password){
+	var validUser, validPass;
+	await compareEncrypted(username, process.env.SECURED_NAME).then(value => { validUser = value; });
+	await compareEncrypted(password, process.env.SECURED_PASS).then(value => { validPass = value; });
+	if(validUser&&validPass){
+		return true;
+	} else {
+		return false;
+	}
+}
 
 // <<<<<<<<<<<<<<<< LOGIN SUPPOSEDLY >>>>>>>>>>>>>>>>> //
-router.post('/login/:user/:password', function(req,res){
-	var user = { id: req.params.user, password: req.params.password };
-	var token = jwt.sign({user},key);
-	res.json({token:token});
+router.post('/login/:user/:password', async function(req,res){
+	var user = { username: req.params.user, password: req.params.password };
+	var valid;
+	//console.log(user.username);
+	await validityCheck(user.username,user.password).then(value => { valid=value; });
+
+	if (valid) {
+		res.json({token:jwt.sign({user},key)});
+		console.log("TOKEN RETURNED");
+	} else {
+		res.json({token:"rejected"});
+		console.log("Request Rejected");
+	}
+	
 });
 
 // <<<<<<<<<<<<<<<< SECURED ROUTE SUPPOSEDLY >>>>>>>>>>>>>>>>> //
@@ -111,13 +137,13 @@ router.get('/register_nuke', (req, res) => {
 });*/
 
 router.post('/login_nuke', (req, res) => {
-	/*
+	
 	bcrypt.hash(req.body.username, 10, (err, hash) => {
 		console.log('Encrypted Username: '+hash);
 	});
 	bcrypt.hash(req.body.password, 10, (err, hash) => {
 		console.log('Encrypted Password: '+hash);
-	});*/
+	});
 
 	bcrypt.compare(req.body.username, process.env.SECURED_NAME, function(err, res) {
 		if(res){
@@ -126,7 +152,7 @@ router.post('/login_nuke', (req, res) => {
 			console.log('User is invalid');
 		}
 	});
-	bcrypt.compare(req.body.password, process.env.SECURED_PASS, function(err, res) {
+	bcrypt.compare(req.body.password, process.env.SECURITY_KEY, function(err, res) {
 		if(res){
 			console.log('Password is valid');
 		} else {
@@ -146,7 +172,6 @@ router.post('/register_nuke', (req, res) => {
 	//console.log(req);
 	return res.redirect('/register_nuke');
 });
-
 
 /*
 const jsonTransform = document.querySelector('#registry_data');
