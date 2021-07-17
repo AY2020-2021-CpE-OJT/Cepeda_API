@@ -111,10 +111,28 @@ router.get('/register_nuke', (req, res) => {
 });*/
 
 router.post('/login_nuke', (req, res) => {
-	console.log('Username: '+ req.body.username);
+	/*
+	bcrypt.hash(req.body.username, 10, (err, hash) => {
+		console.log('Encrypted Username: '+hash);
+	});
 	bcrypt.hash(req.body.password, 10, (err, hash) => {
-		console.log('Password: '+hash);
-	  });
+		console.log('Encrypted Password: '+hash);
+	});*/
+
+	bcrypt.compare(req.body.username, process.env.SECURED_NAME, function(err, res) {
+		if(res){
+			console.log('User is valid');
+		} else {
+			console.log('User is invalid');
+		}
+	});
+	bcrypt.compare(req.body.password, process.env.SECURED_PASS, function(err, res) {
+		if(res){
+			console.log('Password is valid');
+		} else {
+			console.log('Password is invalid');
+		}
+	});
 	//console.log(req.body.password);
 	//console.log(req.body.name);
 	//console.log(req);
