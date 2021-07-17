@@ -18,6 +18,10 @@ db.once('open', () => {
 	console.log("MongoDB Connected");
 });
 // <<<<<<<<<<<<<<<< MIDWARE >>>>>>>>>>>>>>>>> //
+app.set('view-engine','ejs');
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json());
 
 // <<<<<<<<<<<<<<<< ROUTES >>>>>>>>>>>>>>>>> //
@@ -26,7 +30,7 @@ app.get('/', (req, res) => {
 	res.send("THIS IS VERSION 4");
 });
 //  <<<<<<<<<<<<<<<< FORMS FOR LOGIN >>>>>>>>>>>>>>>>> //
-app.set('view-engine','ejs');
+
 //app.use(express.urlencoded);
 
 const reroute = require('./routes/routes');

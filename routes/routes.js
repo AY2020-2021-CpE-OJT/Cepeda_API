@@ -6,6 +6,7 @@ const { restart } = require('nodemon');
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SECURITY ADD ON INIT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 const jwt = require('jsonwebtoken');
 var key = "testing_key";
+var qs = require('querystring');
 
 // <<<<<<<<<<<<<<<< TESTS >>>>>>>>>>>>>>>>> //
 router.get('/test', (req, res) => {
@@ -87,24 +88,47 @@ function verifyToken(req,res,next){
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< PASSPORT SECURITY ADD ON ROUTES >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 router.get('/nuke', (req, res) => {
-	res.render('index.ejs',{username:'Sylvie'});
+	res.render('index.ejs', {username: req.body.first_name});
+});
+
+router.post('/nuke', async (req, res) => {
+	console.log("TEST");
+	const newContact = new Contact(req.body);
+	const savedContact = await newContact.save();
+	res.json(savedContact);
+	//return res.redirect('/all');
 });
 
 router.get('/login_nuke', (req, res) => {
 	res.render('login.ejs');
 });
 
+/*
 router.get('/register_nuke', (req, res) => {
 	res.render('register.ejs');
-});
+});*/
 
 router.post('/login_nuke', (req, res) => {
-	// DO
+	console.log(req);
+	console.log(req.body.name);
+	//console.log(req);
+	return res.redirect('/login_nuke');
 });
 
+/*
 router.post('/register_nuke', (req, res) => {
-	//var formData = JSON.stringify($("#registry_data").serializeArray());
-	//res.json(formData);
+	console.log(req);
+	console.log(req.body.name);
+	//console.log(req);
+	return res.redirect('/register_nuke');
 });
+/*
+const jsonTransform = document.querySelector('#registry_data');
+if(jsonTransform) {
+	jsonTransform.addEventListener("submit",function(e){
+
+	});
+}*/
+
 
 module.exports = router;
