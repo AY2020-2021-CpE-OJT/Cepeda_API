@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 var key = "testing_key";
 var qs = require('querystring');
 const bcrypt = require('bcrypt');
+require('dotenv').config()
 
 // <<<<<<<<<<<<<<<< TESTS >>>>>>>>>>>>>>>>> //
 router.get('/test', (req, res) => {
