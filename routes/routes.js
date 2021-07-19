@@ -89,12 +89,11 @@ router.post('/login/:user/:password', async function(req,res){
 	
 });
 
-router.post('/login_main', async function(req,res){
+router.post('/login_nuke', async function(req,res){
 	var user = { username: req.body.username, password: req.body.password };
 	var valid;
 	//console.log(user.username);
 	await validityCheck(user.username,user.password).then(value => { valid=value; });
-
 	if (valid) {
 		res.json({token:jwt.sign({user},key)});
 		console.log("TOKEN RETURNED");
@@ -152,20 +151,8 @@ router.get('/register_nuke', (req, res) => {
 	res.render('register.ejs');
 });*/
 
-router.post('/login_nuke', (req, res) => {
-	var user = { username: req.body.username, password: req.body.password };
-	var valid;
-	//console.log(user.username);
-	await validityCheck(user.username,user.password).then(value => { valid=value; });
-
-	if (valid) {
-		res.json({token:jwt.sign({user},key)});
-		console.log("TOKEN RETURNED");
-	} else {
-		res.json({token:"rejected"});
-		console.log("Request Rejected");
-	}
-	/*
+router.post('/login_nuke_der', (req, res) => {
+	
 	bcrypt.hash(req.body.username, 10, (err, hash) => {
 		console.log('Encrypted Username: '+hash);
 	});
@@ -190,7 +177,7 @@ router.post('/login_nuke', (req, res) => {
 	//console.log(req.body.password);
 	//console.log(req.body.name);
 	//console.log(req);
-	return res.redirect('/login_nuke');*/
+	return res.redirect('/login_nuke');
 });
 
 
