@@ -36,9 +36,15 @@ router.delete('/delete/:id', async (req, res) => {
 });
 // <<<<<<<<<<<<<<<< UPDATE VIA ID >>>>>>>>>>>>>>>>> //
 router.patch('/update/:id',verifyToken, async (req, res) => {
-	console.log("RUN UPDATE VIA ID");
-	const q = await Contact.updateOne({_id: req.params.id}, {$set: req.body});
-	res.json(q);
+	jwt.verify(req.token,key,function(err,data){
+		if(err){ 
+			res.sendStatus(403);
+		} else {
+			console.log("RUN UPDATE VIA ID");
+			const q = await Contact.updateOne({_id: req.params.id}, {$set: req.body});
+			res.json(q);
+		}
+	})
 });
 // <<<<<<<<<<<<<<<< FIND ALL >>>>>>>>>>>>>>>>> //
 router.get('/all', async (req, res) => {
