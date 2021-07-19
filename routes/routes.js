@@ -35,7 +35,7 @@ router.delete('/delete/:id', async (req, res) => {
     res.json(foundContact);
 });
 // <<<<<<<<<<<<<<<< UPDATE VIA ID >>>>>>>>>>>>>>>>> //
-router.patch('/update/:id', async (req, res) => {
+router.patch('/update/:id',verifyToken, async (req, res) => {
 	console.log("RUN UPDATE VIA ID");
 	const q = await Contact.updateOne({_id: req.params.id}, {$set: req.body});
 	res.json(q);
@@ -94,6 +94,7 @@ router.post('/login_nuke', async function(req,res){
 	var valid;
 	//console.log(user.username);
 	await validityCheck(user.username,user.password).then(value => { valid=value; });
+
 	if (valid) {
 		res.json({token:jwt.sign({user},key)});
 		console.log("TOKEN RETURNED");
