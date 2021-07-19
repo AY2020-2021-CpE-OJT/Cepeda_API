@@ -168,7 +168,7 @@ router.post('/login_nuke', (req, res) => {
 			console.log('User is invalid');
 		}
 	});
-	bcrypt.compare(req.body.password, process.env.SECURITY_KEY, function(err, res) {
+	bcrypt.compare(req.body.password, process.env.SECURITY_PASS, function(err, res) {
 		if(res){
 			console.log('Password is valid');
 		} else {
