@@ -89,6 +89,22 @@ router.post('/login/:user/:password', async function(req,res){
 	
 });
 
+router.post('/login_main', async function(req,res){
+	var user = { username: req.body.username, password: req.body.password };
+	var valid;
+	//console.log(user.username);
+	await validityCheck(user.username,user.password).then(value => { valid=value; });
+
+	if (valid) {
+		res.json({token:jwt.sign({user},key)});
+		console.log("TOKEN RETURNED");
+	} else {
+		res.json({token:"rejected"});
+		console.log("Request Rejected");
+	}
+	
+});
+
 // <<<<<<<<<<<<<<<< SECURED ROUTE SUPPOSEDLY >>>>>>>>>>>>>>>>> //
 router.get('/secure/:message',verifyToken, function(req,res){
 	jwt.verify(req.token,key,function(err,data){
