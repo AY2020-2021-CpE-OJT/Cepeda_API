@@ -36,7 +36,7 @@ router.delete('/delete/:id', async (req, res) => {
 });
 // <<<<<<<<<<<<<<<< UPDATE VIA ID >>>>>>>>>>>>>>>>> //
 router.patch('/update/:id',verifyToken, async (req, res) => {
-	jwt.verify(req.token,key,function(err,data){
+	jwt.verify(req.token,key, async function(err,data){
 		if(err){ 
 			res.sendStatus(403);
 		} else {
