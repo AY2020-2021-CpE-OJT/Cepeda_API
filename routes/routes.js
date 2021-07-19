@@ -36,9 +36,10 @@ router.delete('/delete/:id', async (req, res) => {
 });
 // <<<<<<<<<<<<<<<< UPDATE VIA ID >>>>>>>>>>>>>>>>> //
 router.patch('/update/:id',verifyToken, async (req, res) => {
-	jwt.verify(req.token,key, async function(err,data){
+	jwt.verify(req.token,key,async function(err,data){
 		if(err){ 
 			res.sendStatus(403);
+			console.log("DEBUG: "+ req.token);
 		} else {
 			console.log("RUN UPDATE VIA ID");
 			const q = await Contact.updateOne({_id: req.params.id}, {$set: req.body});
