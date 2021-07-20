@@ -22,7 +22,7 @@ router.post('/new', verifyToken,  async (req, res) => {
 			res.sendStatus(403);
 			console.log("ADD NEW DEBUG: "+ req.token);
 		} else {
-			cconsole.log("RUN ADD NEW");
+			console.log("RUN ADD NEW");
 			const newContact = new Contact(req.body);
 			const savedContact = await newContact.save();
 			res.json(savedContact);
