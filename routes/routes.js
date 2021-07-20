@@ -16,30 +16,51 @@ router.get('/test', (req, res) => {
 	res.send("test");
 });
 // <<<<<<<<<<<<<<<< ADD NEW >>>>>>>>>>>>>>>>> //
-router.post('/new', async (req, res) => {
-	console.log("RUN ADD NEW");
-	const newContact = new Contact(req.body);
-	const savedContact = await newContact.save();
-	res.json(savedContact);
+router.post('/new', verifyToken,  async (req, res) => {
+	jwt.verify(req.token,key,async function(err,data){
+		if(err){ 
+			res.sendStatus(403);
+			console.log("ADD NEW DEBUG: "+ req.token);
+		} else {
+			cconsole.log("RUN ADD NEW");
+			const newContact = new Contact(req.body);
+			const savedContact = await newContact.save();
+			res.json(savedContact);
+		}
+	})
 });
 // <<<<<<<<<<<<<<<< SEARCH VIA ID >>>>>>>>>>>>>>>>> //
-router.get("/get/:id", async (req, res) => {
-	console.log("RUN SEARCH VIA ID");
-    const foundContact = await Contact.findById({ _id: req.params.id });
-    res.json(foundContact);
+router.get("/get/:id",verifyToken, async (req, res) => {
+	jwt.verify(req.token,key,async function(err,data){
+		if(err){ 
+			res.sendStatus(403);
+			console.log("SEARCH VIA ID DEBUG: "+ req.token);
+		} else {
+			console.log("RUN SEARCH VIA ID");
+    		const foundContact = await Contact.findById({ _id: req.params.id });
+    		res.json(foundContact);
+		}
+	})
 });
 // <<<<<<<<<<<<<<<< DELETE VIA ID >>>>>>>>>>>>>>>>> //
-router.delete('/delete/:id', async (req, res) => {
-	console.log("RUN DELETE VIA ID");
-	const foundContact = await Contact.findByIdAndDelete({ _id: req.params.id });
-    res.json(foundContact);
+router.delete('/delete/:id',verifyToken, async (req, res) => {
+	jwt.verify(req.token,key,async function(err,data){
+		if(err){ 
+			res.sendStatus(403);
+			console.log("DELETE DEBUG: "+ req.token);
+		} else {
+			console.log("RUN DELETE VIA ID");
+			const foundContact = await Contact.findByIdAndDelete({ _id: req.params.id });
+    		res.json(foundContact);
+		}
+	})
 });
 // <<<<<<<<<<<<<<<< UPDATE VIA ID >>>>>>>>>>>>>>>>> //
 router.patch('/update/:id',verifyToken, async (req, res) => {
 	jwt.verify(req.token,key,async function(err,data){
 		if(err){ 
 			res.sendStatus(403);
-			console.log("DEBUG: "+ req.token);
+			console.log("UPDATE DEBUG: "+ req.token);
 		} else {
 			console.log("RUN UPDATE VIA ID");
 			const q = await Contact.updateOne({_id: req.params.id}, {$set: req.body});
@@ -48,18 +69,32 @@ router.patch('/update/:id',verifyToken, async (req, res) => {
 	})
 });
 // <<<<<<<<<<<<<<<< FIND ALL >>>>>>>>>>>>>>>>> //
-router.get('/all', async (req, res) => {
-	console.log("RUN FIND ALL");
-	const contact = await Contact.find();
-	res.json(contact);
+router.get('/all', verifyToken,  async (req, res) => {
+	jwt.verify(req.token,key,async function(err,data){
+		if(err){ 
+			res.sendStatus(403);
+			console.log("FIND ALL DEBUG: "+ req.token);
+		} else {
+			console.log("RUN FIND ALL");
+			const contact = await Contact.find();
+			res.json(contact);
+		}
+	})
 });
 // <<<<<<<<<<<<<<<< SEARCH NAMES >>>>>>>>>>>>>>>>> //
-router.get('/search/:via', function(req,res){
-	console.log("RUN SEARCH NAMES");
-    var regex = new RegExp(req.params.via, 'i');  // 'i' makes it case insensitive
-    return Contact.find( { $or: [ {first_name: regex} , {last_name: regex} ] }, function(err,contact){
-        return res.send(contact);
-    });
+router.get('/search/:via',verifyToken, async function(req,res){
+	jwt.verify(req.token,key,async function(err,data){
+		if(err){ 
+			res.sendStatus(403);
+			console.log("SEARCH NAMES DEBUG: "+ req.token);
+		} else {
+			console.log("RUN SEARCH NAMES");
+    		var regex = new RegExp(req.params.via, 'i');  // 'i' makes it case insensitive
+   			 return Contact.find( { $or: [ {first_name: regex} , {last_name: regex} ] }, function(err,contact){
+        	return res.send(contact);
+  		  });
+		}
+	})
 });
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SECURITY ADD ON ROUTES >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 	
