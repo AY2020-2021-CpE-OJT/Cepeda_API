@@ -9,6 +9,7 @@ require('dotenv').config()
 var key = process.env.SECURITY_KEY;
 var qs = require('querystring');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 
 // <<<<<<<<<<<<<<<< TESTS >>>>>>>>>>>>>>>>> //
@@ -231,12 +232,59 @@ router.post('/register_nuke', (req, res) => {
 	return res.redirect('/register_nuke');
 });
 
-router.post('/decrypt/:id',async (req,res) => {
-	var test = req.body.password;
-	var decrypted = 'enter decrypt method here';
-	console.log(req.params.id);
-	res.json({encrypted_pass: req.params.id, decrypted_pass: decrypted } );
+router.post('/get_auth/:username/:password',async(req,res)=>{
+	var auth = 'Basic ' + new Buffer.from(req.params.username+ ':' + req.params.password).toString('base64'); // Basic ZGVhZDo0bGl2ZQ==
+	console.log(auth);
+	res.json({"Authorization": auth});
 });
+
+router.post('/login_new',async (req,res) => {
+	var decoded = ['',''];
+	if(req.headers.authorization!=null){
+		decoded = (Buffer.from((req.headers.authorization).split(" ").pop(), 'base64')).toString().split(':');
+	};
+
+	var user = { username: decoded[0], password: decoded[1] };
+	var valid;
+	await validityCheck(user.username,user.password).then(value => { valid=value; });
+
+	if (valid) {
+		res.json({token:jwt.sign({user},key)});
+		console.log("TOKEN RETURNED");
+	} else {
+		res.json({token:"rejected"});
+		console.log("Request Rejected");
+	}
+});
+
+/*
+function encrypt_data(){
+	crypto.createCipheriv()
+}*/
+/*
+const algorithm = 'aes-256-cbc';
+const enkey = 'iQKAIzLzObCn522aw92EQB9EZECKAITC';
+const iv = crypto.KeyObject
+
+function encrypt(text) {
+ let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(enkey), iv);
+ let encrypted = cipher.update(text);
+ encrypted = Buffer.concat([encrypted, cipher.final()]);
+ return encrypted.toString('hex');
+}
+
+function decrypt(text) {
+ let iv = Buffer.from(text.iv, 'hex');
+ let encryptedText = Buffer.from(text.encryptedData, 'hex');
+ let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(enkey), iv);
+ let decrypted = decipher.update(encryptedText);
+ decrypted = Buffer.concat([decrypted, decipher.final()]);
+ return decrypted.toString();
+}*/
+/*
+var hw = encrypt("Some serious stuff")
+console.log(hw)
+console.log(decrypt(hw))*/
 
 /*
 const jsonTransform = document.querySelector('#registry_data');
