@@ -231,6 +231,13 @@ router.post('/register_nuke', (req, res) => {
 	return res.redirect('/register_nuke');
 });
 
+router.post('/decrypt/:id',async (req,res) => {
+	var test = req.body.password;
+	var decrypted = 'enter decrypt method here';
+	console.log(req.params.id);
+	res.json({encrypted_pass: req.params.id, decrypted_pass: decrypted } );
+});
+
 /*
 const jsonTransform = document.querySelector('#registry_data');
 if(jsonTransform) {
