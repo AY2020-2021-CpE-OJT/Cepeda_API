@@ -242,9 +242,13 @@ router.post('/login_new',async (req,res) => {
 	var decoded = ['',''];
 	if(req.headers.authorization!=null){
 		decoded = (Buffer.from((req.headers.authorization).split(" ").pop(), 'base64')).toString().split(':');
-	};
+		console.log(req.headers.authorization);
+	} else {
+		console.log("Athorization Header Missing");
+	}
 
 	var user = { username: decoded[0], password: decoded[1] };
+	
 	var valid;
 	await validityCheck(user.username,user.password).then(value => { valid=value; });
 
