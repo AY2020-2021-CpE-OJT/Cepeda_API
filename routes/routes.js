@@ -105,6 +105,13 @@ async function compareEncrypted(toTest, encrypted) {
 	return (validity);
 }
 
+async function compareEncrypted2(toTest, encrypted) {
+	console.log(toTest + " vs " +encrypted);
+	var validity;
+	await bcrypt.compare(toTest, encrypted).then((value) => {validity =value});
+	return (validity);
+}
+
 async function validityCheck(username, password) {
 	var validUser, validPass;
 	await compareEncrypted(username, process.env.SECURED_NAME).then(value => { validUser = value; });
@@ -350,13 +357,14 @@ router.post('/login_new2', async function (req, res) {
 	}
 
 	var user = { username: decoded[0], password: decoded[1] };
-	console.log(user.username);
+	//console.log(user.username);
 	//const valid = validityCheck2(user.username, user.password);
 	//console.log(valid);
 	//var valid;
-	const validity = await getHashedPassword(user.username);//.then(res => console.log("response: " + res));
-	console.log("Reso: " + validity);
-	/*
+	const hashed = await getHashedPassword(user.username);//.then(res => console.log("response: " + res));
+	console.log("hashed: " + hashed);
+	validity = await compareEncrypted2(user.password, hashed);
+	console.log("validity: " + validity);
 	if (validity) {
 		//console.log("VALUE: " + valid);
 		res.json({ token: jwt.sign({ user }, key) });
@@ -364,23 +372,28 @@ router.post('/login_new2', async function (req, res) {
 	} else {
 		res.json({ token: "rejected" });
 		console.log("Request Rejected");
-	}*/
-	res.json({ token: "rejected" });
+	}
 });
 
-async function getHashedPassword(username) {
+async function getHashedPassword(username, password) {
+	var hashedPassword, validity;
 	await User.find({ username: username }, async function (err, user) {
+	}).then((user) => {
 		if (user.toString() == '') {
 			console.log("Login Failed");
 			console.log('Error: No User Found In Database');
-
+			hashedPassword = "";
 		} else {
 			console.log("Login");
 			console.log('User Found In Database');
-			return user[0].password;
-		}
+			console.log('Password in Database: ' + user[0].password);
+			console.log(user[0].password);
+			hashedPassword = user[0].password			
+		};
 	});
+	return hashedPassword;
 }
+
 
 async function validityCheck2(username, password) {
 	var validPass = false, validity;
