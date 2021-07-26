@@ -105,13 +105,6 @@ async function compareEncrypted(toTest, encrypted) {
 	return (validity);
 }
 
-async function compareEncrypted2(toTest, encrypted) {
-	console.log(toTest + " vs " +encrypted);
-	var validity;
-	await bcrypt.compare(toTest, encrypted).then((value) => {validity =value});
-	return (validity);
-}
-
 async function validityCheck(username, password) {
 	var validUser, validPass;
 	await compareEncrypted(username, process.env.SECURED_NAME).then(value => { validUser = value; });
@@ -362,9 +355,9 @@ router.post('/login_new2', async function (req, res) {
 	//console.log(valid);
 	//var valid;
 	const hashed = await getHashedPassword(user.username);//.then(res => console.log("response: " + res));
-	console.log("hashed: " + hashed);
+	//console.log("hashed: " + hashed);
 	validity = await compareEncrypted2(user.password, hashed);
-	console.log("validity: " + validity);
+	console.log("Password Valid: " + validity);
 	if (validity) {
 		//console.log("VALUE: " + valid);
 		res.json({ token: jwt.sign({ user }, key) });
@@ -386,12 +379,18 @@ async function getHashedPassword(username, password) {
 		} else {
 			console.log("Login");
 			console.log('User Found In Database');
-			console.log('Password in Database: ' + user[0].password);
-			console.log(user[0].password);
+			//console.log('Password in Database: ' + user[0].password);
+			//console.log(user[0].password);
 			hashedPassword = user[0].password			
 		};
 	});
 	return hashedPassword;
+}
+
+async function compareEncrypted2(toTest, encrypted) {
+	var validity;
+	await bcrypt.compare(toTest, encrypted).then((value) => {validity =value});
+	return (validity);
 }
 
 
@@ -417,10 +416,10 @@ async function validityCheck2(username, password) {
 					//return false;
 				}
 			});
-			console.log("000:" + validity);
+			//console.log("000:" + validity);
 		}
 	});
-	console.log("002:" + validity);
+	//console.log("002:" + validity);
 	return validity;
 }
 
